@@ -54,7 +54,7 @@
 <div class="termy">
 
 ```console
-$ pip install integrify
+$ pip install integrify-core
 ```
 
 </div>
