@@ -11,9 +11,6 @@ authors:
   - given-names: Miradil
     family-names: Zeynalli
     email: miradil.zeynalli@gmail.com
-  - given-names: Vahid
-    family-names: Hasanzada
-    email: vahidzhe@gmail.com
 repository-code: 'https://github.com/Integrify-SDK/integrify-core-python'
 url: 'https://integrify.mmzeynalli.dev/'
 abstract: >-

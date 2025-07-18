@@ -6,10 +6,7 @@ build-backend = "hatchling.build"
 name = "integrify-core"
 version = "1.0.0"
 description = "Integrify API inteqrasiyalarını rahatlaşdıran bünovrə (core) kitabxanadır."
-authors = [
-    { name = "mmzeynalli", email = "miradil.zeynalli@gmail.com" },
-    { name = "vahidzhe", email = "vahidzhe@gmail.com" },
-]
+authors = [{ name = "mmzeynalli", email = "miradil.zeynalli@gmail.com" }]
 requires-python = "~=3.9"
 readme = "README.md"
 license = "GPL-3.0-or-later"
