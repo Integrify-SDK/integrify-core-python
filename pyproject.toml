@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "integrify-core"
-version = "1.0.0"
+version = "1.0.3"
 description = "Integrify API inteqrasiyalarını rahatlaşdıran bünovrə (core) kitabxanadır."
 authors = [{ name = "mmzeynalli", email = "miradil.zeynalli@gmail.com" }]
 requires-python = "~=3.9"
