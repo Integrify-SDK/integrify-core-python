@@ -32,19 +32,13 @@ jobs:
         marker="<!-- AUTO-UPDATE SECTION -->"
         tmp_file=$(mktemp)
         awk -v marker="$marker" -v insert="$(cat extracted_section.md)" '
-          BEGIN { print_inserted=0 }
-          {
-            if (print_inserted) {
-              print insert
-            }
-            else {
-              print $0
-            }
-
-            if ($0 ~ marker) {
-              print_inserted=1
-            }
+        {
+          print $0
+          if ($0 ~ marker) {
+            print insert
+            exit  # Stop after inserting content
           }
+        }
         ' README.md > "$tmp_file"
         mv "$tmp_file" README.md
 
