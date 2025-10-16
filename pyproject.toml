@@ -4,10 +4,10 @@ build-backend = "hatchling.build"
 
 [project]
 name = "integrify-core"
-version = "1.0.3"
+version = "1.0.4"
 description = "Integrify API inteqrasiyalarını rahatlaşdıran bünovrə (core) kitabxanadır."
 authors = [{ name = "mmzeynalli", email = "miradil.zeynalli@gmail.com" }]
-requires-python = "~=3.9"
+requires-python = ">=3.9"
 readme = "README.md"
 license = "GPL-3.0-or-later"
 classifiers = [
@@ -46,7 +46,6 @@ Documentation = "https://integrify.mmzeynalli.dev/"
 gh = [
     "pytest>=8.1.1,<9",
     "pytest-mock>=3.14.0,<4",
-    "time-machine>=2.16.0",
     "smokeshow>=0.4.0,<0.5",
     "coverage>=7.6.3,<8",
     "duty>=1.5.0",
@@ -62,7 +61,6 @@ dev = [
     "coverage>=7.6.3,<8",
     "pylint>=3.3.1,<4",
     "duty>=1.5.0",
-    "time-machine>=2.16.0",
 ]
 docs = [
     "mkdocs-material[imaging]>=9.6.4,<10",
@@ -115,6 +113,9 @@ disable = ["C0114", "C0115", "C0301", "R0913", "R0914", "R0917", "R0801"]
 [tool.mypy]
 exclude = ["tests/*", "test.py"]
 plugins = ["pydantic.mypy"]
+mypy_path = "src"
+namespace_packages = true
+explicit_package_bases = true
 
 [tool.pytest.ini_options]
 pythonpath = ["src/"]
