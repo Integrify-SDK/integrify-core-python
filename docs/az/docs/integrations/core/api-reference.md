@@ -48,8 +48,12 @@
 
 ## Extras
 
-::: integrify.utils._UNSET
+::: integrify.utils.UNSET
 
-::: integrify.utils.Unsettable
+::: integrify.utils.Unset
 
-::: integrify.utils.UnsettableAndNone
+::: integrify.utils.UnsettOrNone
+
+::: integrify.utils.UnsetField
+
+::: integrify.utils.UnsetOrNoneField

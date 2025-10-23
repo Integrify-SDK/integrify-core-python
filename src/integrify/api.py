@@ -7,7 +7,7 @@ import httpx
 
 from integrify.logger import LOGGER_FUNCTION
 from integrify.schemas import APIResponse, DryResponse, PayloadBaseModel
-from integrify.utils import _UNSET, _ResponseT
+from integrify.utils import UNSET, _ResponseT
 
 
 class APIClient:
@@ -105,8 +105,8 @@ class APIClient:
                 verb,
                 handler,
                 # Exclude unset values, to trigger pydantic defaults
-                *(arg for arg in args if arg is not _UNSET),
-                **{k: v for k, v in kwds.items() if v is not _UNSET},
+                *(arg for arg in args if arg is not UNSET),
+                **{k: v for k, v in kwds.items() if v is not UNSET},
             )
 
 
@@ -178,7 +178,7 @@ class APIPayloadHandler:
             return self.__req_model.model_dump(
                 by_alias=True,
                 exclude=self.req_model.URL_PARAM_FIELDS,
-                exclude_none=True,
+                exclude_unset=True,
                 mode='json',
             )
 
@@ -275,6 +275,7 @@ class APIExecutor:
         verb: str,
         handler: APIPayloadHandler,
         *args,
+        headers: Optional[dict] = None,
         **kwds,
     ) -> Union[httpx.Response, APIResponse[_ResponseT], DryResponse]:
         """Sync sorğu atan funksiya
@@ -287,7 +288,7 @@ class APIExecutor:
         assert isinstance(self.client, httpx.Client)
 
         data = handler.handle_request(*args, **kwds)
-        headers = handler.headers
+        full_headers = {**handler.headers, **(headers or {})}
         full_url = handler.set_urlparams(url)
 
         if self.dry or handler.dry:
@@ -295,11 +296,11 @@ class APIExecutor:
                 url=full_url,
                 verb=verb,
                 request_args=handler.req_args,
-                headers=headers,
+                headers=full_headers,
                 data=data,
             )
 
-        request_kwds = {'headers': headers, **handler.req_args}
+        request_kwds = {'headers': full_headers, **handler.req_args}
 
         if verb == 'GET':
             request_kwds['params'] = data
@@ -325,6 +326,7 @@ class APIExecutor:
         verb: str,
         handler: APIPayloadHandler,
         *args,
+        headers: Optional[dict] = None,
         **kwds,
     ) -> Union[httpx.Response, APIResponse[_ResponseT], DryResponse]:
         """Async sorğu atan funksiya
@@ -337,7 +339,7 @@ class APIExecutor:
         assert isinstance(self.client, httpx.AsyncClient)
 
         data = handler.handle_request(*args, **kwds)
-        headers = handler.headers
+        full_headers = {**handler.headers, **(headers or {})}
         full_url = handler.set_urlparams(url)
 
         if self.dry:
@@ -346,11 +348,11 @@ class APIExecutor:
                 url=full_url,
                 verb=verb,
                 request_args=handler.req_args,
-                headers=headers,
+                headers=full_headers,
                 data=data,
             )
 
-        request_kwds = {'headers': headers, **handler.req_args}
+        request_kwds = {'headers': full_headers, **handler.req_args}
 
         if verb == 'GET':
             request_kwds['params'] = data
