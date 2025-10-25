@@ -35,13 +35,13 @@ UNSET = UnsetType()
 Unset = Union[T, Literal[UNSET]]  # type: ignore[valid-type]
 """ Optional argument tipi """
 
-UnsettOrNone = Union[T, Literal[UNSET], None]  # type: ignore[valid-type]
+UnsetOrNone = Union[T, Literal[UNSET], None]  # type: ignore[valid-type]
 """None dəyəri ala bilən optional argument tipi"""
 
 UnsetField = Annotated[Unset[T], Field(default=UNSET)]
 """Pydantic üçün set olunmamış argument dəyəri"""
 
-UnsetOrNoneField = Annotated[UnsettOrNone[T], Field(default=UNSET)]
+UnsetOrNoneField = Annotated[UnsetOrNone[T], Field(default=UNSET)]
 """Pydantic üçün set olunmamış və None dəyəri ala bilən argument dəyəri"""
 
 

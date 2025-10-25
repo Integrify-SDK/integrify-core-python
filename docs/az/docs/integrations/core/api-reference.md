@@ -52,7 +52,7 @@
 
 ::: integrify.utils.Unset
 
-::: integrify.utils.UnsettOrNone
+::: integrify.utils.UnsetOrNone
 
 ::: integrify.utils.UnsetField
 
