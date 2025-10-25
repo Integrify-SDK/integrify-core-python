@@ -78,6 +78,21 @@ class APIClient:
         """
         self.handlers[route_name] = handler_class()
 
+    def _build_request_lambda(
+        self,
+        func: Callable,
+        url: str,
+        verb: str,
+        handler: 'APIPayloadHandler',
+    ) -> Callable:
+        return lambda *args, **kwds: func(
+            url,
+            verb,
+            handler,
+            *(arg for arg in args if arg is not UNSET),
+            **{k: v for k, v in kwds.items() if v is not UNSET},
+        )
+
     def __getattribute__(self, name: str) -> Any:
         """Möcüzənin baş verdiyi yer:
 
@@ -100,14 +115,7 @@ class APIClient:
             handler = self.handlers.get(name, self.default_handler)
 
             func = self.request_executor.request_function
-            return lambda *args, **kwds: func(
-                url,
-                verb,
-                handler,
-                # Exclude unset values, to trigger pydantic defaults
-                *(arg for arg in args if arg is not UNSET),
-                **{k: v for k, v in kwds.items() if v is not UNSET},
-            )
+            return self._build_request_lambda(func, url, verb, handler)
 
 
 class APIPayloadHandler:
@@ -178,7 +186,6 @@ class APIPayloadHandler:
             return self.__req_model.model_dump(
                 by_alias=True,
                 exclude=self.req_model.URL_PARAM_FIELDS,
-                exclude_unset=True,
                 mode='json',
             )
 

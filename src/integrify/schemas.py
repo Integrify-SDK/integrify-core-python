@@ -1,10 +1,10 @@
 import json
 from typing import Any, ClassVar, Generic, Union
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_serializer
 from typing_extensions import TypedDict
 
-from integrify.utils import _ResponseT
+from integrify.utils import UNSET, _ResponseT
 
 
 class APIResponse(BaseModel, Generic[_ResponseT]):
@@ -66,3 +66,9 @@ class PayloadBaseModel(BaseModel):
         EYNİ OLMALIDIR, əks halda, bu method yararsızdır.
         """
         return cls.model_validate({**dict(zip(cls.get_input_fields(), args)), **kwds})
+
+    @model_serializer(mode='wrap')
+    def _serialize(self, serializer):
+        data = serializer(self)
+        # Exclude UNSET values
+        return {k: v for k, v in data.items() if v is not UNSET}
