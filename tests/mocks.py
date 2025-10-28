@@ -13,6 +13,14 @@ def test_ok_response():
 
 
 @pytest.fixture(scope='package')
+def test_ok_response2():
+    return Response(
+        status_code=200,
+        json={'data1': 'output1'},
+    )
+
+
+@pytest.fixture(scope='package')
 def test_error_response():
     return Response(
         status_code=404,

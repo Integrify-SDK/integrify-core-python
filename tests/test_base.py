@@ -8,6 +8,7 @@ from pytest_mock import MockerFixture
 
 from integrify.api import APIClient, APIPayloadHandler
 from integrify.schemas import PayloadBaseModel
+from integrify.utils import UNSET, UnsetField
 
 
 class RequestSchema(PayloadBaseModel):
@@ -18,9 +19,19 @@ class RequestWithURLParamSchema(RequestSchema):
     URL_PARAM_FIELDS = {'data1'}
 
 
+class RequestWithUnset(PayloadBaseModel):
+    data1: str
+    data2: UnsetField[str]
+
+
 class ResponseSchema(BaseModel):
     data1: str
     data2: str
+
+
+class ResponseSchemaWithUnset(BaseModel):
+    data1: str
+    data2: UnsetField[str]
 
 
 def test_unimplemented_function(api_client: APIClient):
@@ -189,3 +200,43 @@ def test_dry_run_json(dry_api_client):
     resp = dry_api_client.test(data1='input1')
     assert isinstance(resp['data'], dict)
     assert resp['data']['data1'] == 'input1'
+
+
+def test_unset_request(dry_api_client):
+    class Handler(APIPayloadHandler):
+        def __init__(self):
+            super().__init__(RequestWithUnset, ResponseSchema)
+
+    dry_api_client.add_url('test', 'url', 'GET')
+    dry_api_client.add_handler('test', Handler)
+    resp = dry_api_client.test(data1='input1', data2='input2')
+    assert isinstance(resp['data'], dict)
+    assert resp['data']['data1'] == 'input1'
+    assert resp['data']['data2'] == 'input2'
+
+
+def test_unset_request2(dry_api_client):
+    class Handler(APIPayloadHandler):
+        def __init__(self):
+            super().__init__(RequestWithUnset, ResponseSchema)
+
+    dry_api_client.add_url('test', 'url', 'GET')
+    dry_api_client.add_handler('test', Handler)
+    resp = dry_api_client.test(data1='input1')
+    assert isinstance(resp['data'], dict)
+    assert resp['data']['data1'] == 'input1'
+    assert 'data2' not in resp['data']
+
+
+def test_unset_response(api_client: APIClient, test_ok_response2, mocker: MockerFixture):
+    class Handler(APIPayloadHandler):
+        def __init__(self):
+            super().__init__(RequestWithUnset, ResponseSchemaWithUnset)
+
+    with mocker.patch('httpx.Client.request', return_value=test_ok_response2):
+        api_client.add_url('test', 'url', 'GET')
+        api_client.add_handler('test', Handler)
+        resp = api_client.test(data1='input1', data2='input2')
+        assert isinstance(resp.body, ResponseSchemaWithUnset)
+        assert resp.body.data1 == 'output1'
+        assert resp.body.data2 is UNSET

@@ -20,7 +20,7 @@ class UnsetType:
         return cls._instance
 
     def __repr__(self):
-        return 'UNSET'
+        return '<UNSET>'
 
     def __str__(self):
         return 'UNSET'
@@ -30,7 +30,6 @@ class UnsetType:
 
 
 UNSET = UnsetType()
-"""Set olunmamış argument dəyəri"""
 
 Unset = Union[T, Literal[UNSET]]  # type: ignore[valid-type]
 """ Optional argument tipi """
@@ -38,10 +37,10 @@ Unset = Union[T, Literal[UNSET]]  # type: ignore[valid-type]
 UnsetOrNone = Union[T, Literal[UNSET], None]  # type: ignore[valid-type]
 """None dəyəri ala bilən optional argument tipi"""
 
-UnsetField = Annotated[Unset[T], Field(default=UNSET)]
+UnsetField = Annotated[Unset[T], Field(default=UNSET, exclude_if=lambda x: x is UNSET)]
 """Pydantic üçün set olunmamış argument dəyəri"""
 
-UnsetOrNoneField = Annotated[UnsetOrNone[T], Field(default=UNSET)]
+UnsetOrNoneField = Annotated[UnsetOrNone[T], Field(default=UNSET, exclude_if=lambda x: x is UNSET)]
 """Pydantic üçün set olunmamış və None dəyəri ala bilən argument dəyəri"""
 
 
